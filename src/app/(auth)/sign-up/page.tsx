@@ -2,7 +2,7 @@
 
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { signUpAction } from "./actions";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export interface SingUpState {
@@ -18,6 +18,7 @@ const initState: SingUpState = {};
 export default function SignUp() {
   const [state, formAction] = useActionState(signUpAction, initState);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Box
@@ -55,7 +56,9 @@ export default function SignUp() {
       />
       {state.formErr && <Typography color="error">{state.formErr}</Typography>}
       <Box sx={{ display: "flex", gap: 2 }}>
-        <Button type="submit">Sign Up</Button>
+        <Button type="submit" disabled={isLoading}>
+          Sign Up
+        </Button>
         <Button
           type="button"
           onClick={() => {

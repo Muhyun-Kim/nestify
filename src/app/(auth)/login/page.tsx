@@ -2,7 +2,7 @@
 
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { loginAction } from "./actions";
-import { useActionState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export interface LoginState {
@@ -17,6 +17,13 @@ const initState: LoginState = {};
 export default function Login() {
   const [state, formAction] = useActionState(loginAction, initState);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (state.success) {
+      router.push("/home");
+    }
+  }, [state.success, router]);
 
   return (
     <Box
@@ -47,7 +54,9 @@ export default function Login() {
       />
       {state.formErr && <Typography color="error">{state.formErr}</Typography>}
       <Box sx={{ display: "flex", gap: 2 }}>
-        <Button type="submit">Login</Button>
+        <Button type="submit" disabled={isLoading}>
+          Login
+        </Button>
         <Button
           type="button"
           onClick={() => {
