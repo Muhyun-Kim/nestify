@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase-server";
 import { SingUpState } from "./page";
 import { z } from "zod";
 import { AuthError } from "@supabase/supabase-js";

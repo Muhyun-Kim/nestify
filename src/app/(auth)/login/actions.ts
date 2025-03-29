@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { LoginState } from "./page";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase-server";
 import { cookies } from "next/headers";
 
 const loginSchema = z.object({
