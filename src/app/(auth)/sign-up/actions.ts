@@ -23,7 +23,6 @@ export const signUpAction = async (
   formData: FormData
 ): Promise<SingUpState> => {
   const supabase = await createClient();
-  console.log("start");
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
