@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useState } from "react";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export default function Profile() {
   const user = useUserStore((state) => state.user);
@@ -21,7 +22,7 @@ export default function Profile() {
   const [nickname, setNickname] = useState(user?.nickname ?? "");
 
   const handleUpdate = async () => {
-    const supabase = await supabaseBrowserClient;
+    const supabase = supabaseBrowserClient;
     const { data, error } = await supabase.auth.updateUser({
       data: { nickname },
     });
@@ -44,6 +45,17 @@ export default function Profile() {
     <Box
       sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
+      <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <Typography variant="body1">ID: {user?.id}</Typography>
+        <Button
+          color="primary"
+          onClick={() => {
+            navigator.clipboard.writeText(user?.id ?? "");
+          }}
+        >
+          <ContentCopyIcon />
+        </Button>
+      </Box>
       <Typography variant="body1">Email: {user?.email}</Typography>
       <Typography variant="body1">
         Name:{" "}
