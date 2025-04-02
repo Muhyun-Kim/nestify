@@ -26,6 +26,13 @@ export const Navbar = () => {
           >
             <Typography variant="h6">Nestify</Typography>
           </Button>
+          <Button
+            variant="text"
+            color="inherit"
+            onClick={() => router.push("/study")}
+          >
+            Study
+          </Button>
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
           <Button
