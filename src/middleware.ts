@@ -51,11 +51,6 @@ export async function middleware(request: NextRequest) {
     console.error("Session check error in middleware:", error);
   }
 
-  console.log(
-    "Current session:",
-    session ? "Authenticated" : "Not authenticated"
-  );
-
   if (session?.user) {
     const {
       data: { user },

@@ -21,7 +21,7 @@ export default function Login() {
 
   useEffect(() => {
     if (state.success) {
-      router.push("/home");
+      router.push("/study/create");
     }
   }, [state.success, router]);
 

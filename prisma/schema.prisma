@@ -14,9 +14,12 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Study {
+model StudyRoom {
   id          Int      @id @default(autoincrement())
   title       String
+  password    String?
+  ownerId     String
   description String
+  isPublic    Boolean  @default(false)
   createdAt   DateTime @default(now())
 }
