@@ -20,7 +20,6 @@ export const createStudyAction = async (
   prevState: CreateStudyState,
   formData: FormData
 ) => {
-  console.log("createStudyAction📖");
   const supabase = await createClient();
   const {
     data: { user },
@@ -37,7 +36,6 @@ export const createStudyAction = async (
 
   if (!validatedFields.success) {
     const errors = validatedFields.error.flatten().fieldErrors;
-    console.log(errors);
     return {
       titleErr: errors.title?.[0],
       descriptionErr: errors.description?.[0],
@@ -46,8 +44,6 @@ export const createStudyAction = async (
       success: false,
     };
   }
-
-  console.log(validatedFields.data);
 
   const res = await prisma.studyRoom.create({
     data: {
@@ -59,7 +55,12 @@ export const createStudyAction = async (
     },
   });
 
-  console.log(res);
+  if (!res) {
+    return {
+      formErr: "Study作成に失敗しました。",
+      success: false,
+    };
+  }
 
   return { success: true };
 };

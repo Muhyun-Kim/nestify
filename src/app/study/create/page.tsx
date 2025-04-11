@@ -67,6 +67,9 @@ export default function Study() {
         <Button type="submit" variant="contained" color="primary">
           作成
         </Button>
+        {state.formErr && (
+          <Typography color="error">{state.formErr}</Typography>
+        )}
       </Box>
     </Box>
   );
