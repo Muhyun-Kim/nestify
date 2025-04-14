@@ -1,3 +1,5 @@
+import { getUser } from "@/app/(auth)/profile/actions";
+import prisma from "@/lib/prisma";
 import { supabaseBrowserClient } from "@/lib/supbase-browser";
 import { create } from "zustand";
 interface User {
@@ -18,17 +20,14 @@ export const useUserStore = create<UserState>((set) => ({
   setUser: (user) => set({ user }),
   clearUser: () => set({ user: null }),
   restoreUser: async () => {
-    const supabase = supabaseBrowserClient;
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const user = await getUser();
 
-    if (session?.user) {
+    if (user) {
       set({
         user: {
-          id: session.user.id,
-          email: session.user.email!,
-          nickname: session.user.user_metadata.nickname ?? "",
+          id: user.id,
+          email: user.email!,
+          nickname: user.nickname ?? "",
         },
       });
     }

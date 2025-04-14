@@ -1,6 +1,5 @@
 "use client";
 
-import { supabaseBrowserClient } from "@/lib/supbase-browser";
 import { useUserStore } from "@/store/user";
 import {
   Box,
@@ -12,33 +11,34 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import prisma from "@/lib/prisma";
+import { updateNicknameAction } from "./actions";
 
 export default function Profile() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const [open, setOpen] = useState(false);
   const [nickname, setNickname] = useState(user?.nickname ?? "");
+  const restoreUser = useUserStore((state) => state.restoreUser);
+  const [error, setError] = useState("");
 
-  const handleUpdate = async () => {
-    const supabase = supabaseBrowserClient;
-    const { data, error } = await supabase.auth.updateUser({
-      data: { nickname },
-    });
+  useEffect(() => {
+    restoreUser();
+  }, [restoreUser]);
 
-    if (error) {
-      console.error("닉네임 업데이트 실패:", error.message);
-      return;
+  const handleSubmit = async (formData: FormData) => {
+    const result = await updateNicknameAction(formData);
+    if (result.nickname) {
+      setUser({
+        ...user!,
+        nickname: result.nickname,
+      });
+      setOpen(false);
+    } else {
+      setError(result.error ?? "");
     }
-
-    setUser({
-      id: data.user.id,
-      email: data.user.email!,
-      nickname: data.user.user_metadata.nickname ?? "",
-    });
-
-    setOpen(false);
   };
 
   return (
@@ -67,21 +67,26 @@ export default function Profile() {
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>ユーザー名を変更</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="新しいユーザー名"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            autoFocus
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>キャンセル</Button>
-          <Button onClick={handleUpdate} variant="contained">
-            保存
-          </Button>
-        </DialogActions>
+        <form action={handleSubmit}>
+          <DialogContent>
+            <TextField
+              fullWidth
+              name="nickname"
+              label="新しいユーザー名"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              autoFocus
+              error={!!error}
+              helperText={error}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>キャンセル</Button>
+            <Button type="submit" variant="contained">
+              保存
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </Box>
   );

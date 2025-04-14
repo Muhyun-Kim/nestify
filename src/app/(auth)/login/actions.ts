@@ -4,6 +4,7 @@ import { z } from "zod";
 import { LoginState } from "./page";
 import { createClient } from "@/lib/supabase-server";
 import { cookies } from "next/headers";
+import prisma from "@/lib/prisma";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "無効なメールアドレスです。" }),
@@ -84,6 +85,29 @@ export const loginAction = async (
     );
 
     console.log("Session successfully set:", session.user.email);
+  }
+
+  const authUser = await supabase.auth.getUser();
+
+  if (!authUser.data.user) {
+    return { formErr: "ユーザーが見つかりません" };
+  }
+
+  // check if user exists in database
+  const user = await prisma.user.findUnique({
+    where: {
+      id: authUser.data.user?.id,
+      email: authUser.data.user?.email,
+    },
+  });
+
+  if (!user) {
+    await prisma.user.create({
+      data: {
+        id: authUser.data.user?.id,
+        nickname: "",
+      },
+    });
   }
 
   return { success: true };
