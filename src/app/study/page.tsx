@@ -1,6 +1,7 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { use } from "react";
 import { fetchStudyRooms } from "./actions";
+import StudyCard from "./StudyCard";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 export default function StudyMainPage() {
@@ -12,23 +13,22 @@ export default function StudyMainPage() {
     >
       <Typography>Study一覧</Typography>
       <Box
-        sx={{ width: "80%", display: "flex", flexDirection: "column", gap: 2 }}
+        sx={{
+          width: "80%",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          columnGap: 2,
+          rowGap: 4,
+        }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            border: "1px solid #ccc",
-            borderRadius: 4,
-            width: "15%",
-            aspectRatio: "5 / 3",
-          }}
-        >
-          <Button>
-            <AddCircleOutlineIcon sx={{ fontSize: 40 }} />
-          </Button>
-        </Box>
+        <StudyCard url="/study/create">
+          <AddCircleOutlineIcon sx={{ fontSize: 40, color: "primary.main" }} />
+        </StudyCard>
+        {rooms.map((room) => (
+          <StudyCard key={room.id} url={`/study/${room.id}`}>
+            <Typography>{room.title}</Typography>
+          </StudyCard>
+        ))}
       </Box>
     </Box>
   );
