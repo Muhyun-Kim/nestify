@@ -28,7 +28,7 @@ export const createStudyAction = async (
     title: formData.get("title"),
     description: formData.get("description"),
     password: formData.get("password"),
-    isPublic: formData.get("isPublic") === "on",
+    isPublic: formData.get("isPublic") !== "on",
     ownerId: user?.id,
   };
 

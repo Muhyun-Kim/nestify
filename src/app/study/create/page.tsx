@@ -26,7 +26,7 @@ const initState: CreateStudyState = {
 };
 
 export default function Study() {
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const [state, formAction] = useActionState(createStudyAction, initState);
   const router = useRouter();
 
@@ -47,7 +47,7 @@ export default function Study() {
         action={formAction}
       >
         <TextField name="title" label="タイトル" error={!!state.titleErr} />
-        {isPublic && (
+        {!isPublic && (
           <TextField
             name="password"
             label="パスワード"
@@ -62,7 +62,7 @@ export default function Study() {
         <FormControlLabel
           control={<Switch name="isPublic" />}
           label="非公開"
-          onChange={(_e, checked) => setIsPublic(checked)}
+          onChange={(_e, checked) => setIsPublic(!checked)}
         />
         <Button type="submit" variant="contained" color="primary">
           作成
