@@ -1,17 +1,53 @@
-import { Box, Typography } from "@mui/material";
-import { use } from "react";
-import { fetchStudyRooms } from "./actions";
+"use client";
+
+import { Box, Modal, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import StudyCard from "./StudyCard";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useRouter } from "next/navigation";
+import { StudyRoom } from "@prisma/client";
+import EnterStudyRoomModal from "./EnterStudyRoomModal";
+
+export interface StudyRoomWithOwner extends StudyRoom {
+  owner: {
+    nickname: string;
+  } | null;
+}
 
 export default function StudyMainPage() {
-  const rooms = use(fetchStudyRooms());
-  console.log(rooms);
+  const [rooms, setRooms] = useState<StudyRoomWithOwner[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<StudyRoomWithOwner | null>(
+    null
+  );
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const res = await fetch("/api/study");
+        const data = await res.json();
+        setRooms(data);
+      } catch (e) {
+        console.error("방 정보 가져오기 실패:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, []);
+
   return (
     <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        mt: 4,
+      }}
     >
-      <Typography>Study一覧</Typography>
       <Box
         sx={{
           width: "80%",
@@ -21,15 +57,33 @@ export default function StudyMainPage() {
           rowGap: 4,
         }}
       >
-        <StudyCard url="/study/create">
+        <StudyCard onClick={() => router.push("/study/create")}>
           <AddCircleOutlineIcon sx={{ fontSize: 40, color: "primary.main" }} />
         </StudyCard>
+
         {rooms.map((room) => (
-          <StudyCard key={room.id} url={`/study/${room.id}`}>
-            <Typography>{room.title}</Typography>
+          <StudyCard
+            key={room.id}
+            onClick={() => {
+              setSelectedRoom(room);
+              setOpen(true);
+            }}
+          >
+            <Box>
+              <Typography fontWeight="bold">{room.title}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {room.owner?.nickname ?? "No owner"}
+              </Typography>
+            </Box>
           </StudyCard>
         ))}
       </Box>
+      <EnterStudyRoomModal
+        open={open}
+        setOpen={setOpen}
+        selectedRoom={selectedRoom ?? null}
+      />
+      {loading && <Typography sx={{ mt: 2 }}>Loading...</Typography>}
     </Box>
   );
 }

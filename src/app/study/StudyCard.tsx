@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 interface StudyCardProps {
-  url: string;
+  onClick?: () => void;
   children?: ReactNode;
 }
-export default function StudyCard({ url, children }: StudyCardProps) {
+export default function StudyCard({ onClick, children }: StudyCardProps) {
   const router = useRouter();
   return (
     <Button
@@ -21,9 +21,7 @@ export default function StudyCard({ url, children }: StudyCardProps) {
         width: "80%",
         aspectRatio: "5 / 3",
       }}
-      onClick={() => {
-        router.push(url);
-      }}
+      onClick={onClick}
     >
       {children}
     </Button>
