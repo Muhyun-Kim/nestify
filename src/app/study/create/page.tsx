@@ -52,12 +52,15 @@ export default function Study() {
             name="password"
             label="パスワード"
             error={!!state.passwordErr}
+            type="password"
+            helperText={state.passwordErr}
           />
         )}
         <TextField
           name="description"
           label="説明"
           error={!!state.descriptionErr}
+          helperText={state.descriptionErr}
         />
         <FormControlLabel
           control={<Switch name="isPublic" />}

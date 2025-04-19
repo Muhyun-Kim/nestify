@@ -7,10 +7,7 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
-      select: {
-        id: true,
-        title: true,
-        isPublic: true,
+      include: {
         owner: {
           select: {
             nickname: true,

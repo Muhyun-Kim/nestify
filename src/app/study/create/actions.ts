@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase-server";
 import { z } from "zod";
 import { CreateStudyState } from "./page";
 import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
 
 const createStudySchema = z.object({
   title: z.string().min(1, { message: "タイトルは必須です。" }),
@@ -45,11 +46,15 @@ export const createStudyAction = async (
     };
   }
 
+  const hashedPassword = validatedFields.data.password
+    ? await bcrypt.hash(validatedFields.data.password, 10)
+    : undefined;
+
   const res = await prisma.studyRoom.create({
     data: {
       title: validatedFields.data.title,
       description: validatedFields.data.description,
-      password: validatedFields.data.password,
+      password: hashedPassword,
       isPublic: validatedFields.data.isPublic,
       ownerId: validatedFields.data.ownerId,
     },
