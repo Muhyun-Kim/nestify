@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import StudyCard from "./StudyCard";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -61,29 +61,47 @@ export default function StudyMainPage() {
           <AddCircleOutlineIcon sx={{ fontSize: 40, color: "primary.main" }} />
         </StudyCard>
 
-        {rooms.map((room) => (
-          <StudyCard
-            key={room.id}
-            onClick={() => {
-              setSelectedRoom(room);
-              setOpen(true);
-            }}
-          >
-            <Box>
-              <Typography fontWeight="bold">{room.title}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {room.owner?.nickname ?? "No owner"}
-              </Typography>
-            </Box>
-          </StudyCard>
-        ))}
+        {loading
+          ? Array.from({ length: 7 }).map((_, index) => (
+              <StudyCard key={index}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Skeleton variant="text" width="60%" height={30} />
+                  <Skeleton variant="text" width="40%" height={20} />
+                </Box>
+              </StudyCard>
+            ))
+          : rooms.map((room) => (
+              <StudyCard
+                key={room.id}
+                onClick={() => {
+                  setSelectedRoom(room);
+                  setOpen(true);
+                }}
+              >
+                <Box>
+                  <Typography fontWeight="bold">{room.title}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {room.owner?.nickname ?? "No owner"}
+                  </Typography>
+                </Box>
+              </StudyCard>
+            ))}
       </Box>
       <EnterStudyRoomModal
         open={open}
         setOpen={setOpen}
         selectedRoom={selectedRoom ?? null}
       />
-      {loading && <Typography sx={{ mt: 2 }}>Loading...</Typography>}
     </Box>
   );
 }

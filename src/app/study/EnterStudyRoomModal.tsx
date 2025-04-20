@@ -30,8 +30,8 @@ export default function EnterStudyRoomModal({
       const data = await res.json();
       if (data.error) {
         setError(data.error);
+        return;
       }
-      return;
     }
     setOpen(false);
     router.push(`/study/${selectedRoom?.id}`);

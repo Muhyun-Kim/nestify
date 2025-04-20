@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const id = context.params.id;
+  const id = (await context.params).id;
   const { password } = await request.json();
 
   const studyRoom = await prisma.studyRoom.findUnique({
