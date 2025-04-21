@@ -25,3 +25,29 @@ export async function GET() {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const roomId = searchParams.get("studyRoomId");
+
+  if (!roomId) {
+    return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
+  }
+
+  try {
+    await prisma.studyRoom.delete({
+      where: { id: Number(roomId) },
+    });
+
+    return NextResponse.json(
+      { message: "Room deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Failed to delete room:", error);
+    return NextResponse.json(
+      { error: "Failed to delete room" },
+      { status: 500 }
+    );
+  }
+}

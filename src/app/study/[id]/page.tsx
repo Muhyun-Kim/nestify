@@ -1,4 +1,6 @@
+import { Box, Button, Typography } from "@mui/material";
 import { fetchStudyRoom } from "./actions";
+import DeleteBtn from "./DeleteBtn";
 
 export default async function StudyRoomPage(props: {
   params: Promise<{ id?: string }>;
@@ -9,5 +11,23 @@ export default async function StudyRoomPage(props: {
   }
 
   const room = await fetchStudyRoom(Number(params.id));
-  return <div>{room?.title}</div>;
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        p: 2,
+      }}
+    >
+      <Box
+        sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}
+      >
+        <Box />
+        <Typography variant="h4">{room?.title}</Typography>
+        <DeleteBtn roomOwnerId={room!.ownerId} roomId={room!.id} />
+      </Box>
+    </Box>
+  );
 }
