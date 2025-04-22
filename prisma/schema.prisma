@@ -21,7 +21,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  studyRooms StudyRoom[] @relation("UserStudyRooms")
+  studyRooms      StudyRoom[]       @relation("UserStudyRooms")
+  StudyRoomMember StudyRoomMember[]
 }
 
 model StudyRoom {
@@ -33,5 +34,16 @@ model StudyRoom {
   isPublic    Boolean  @default(false)
   createdAt   DateTime @default(now())
 
-  owner User @relation("UserStudyRooms", fields: [ownerId], references: [id])
+  owner           User              @relation("UserStudyRooms", fields: [ownerId], references: [id])
+  StudyRoomMember StudyRoomMember[]
+}
+
+model StudyRoomMember {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  studyRoomId Int
+  joinedAt    DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  studyRoom StudyRoom @relation(fields: [studyRoomId], references: [id])
 }

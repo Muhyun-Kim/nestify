@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase-server";
 import { z } from "zod";
 import { CreateStudyState } from "./page";
 import prisma from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const createStudySchema = z.object({
   title: z.string().min(1, { message: "タイトルは必須です。" }),
